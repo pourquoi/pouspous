@@ -1,0 +1,9 @@
+App\Entity\Event:
+  event_{1..1000}:
+    created_at: <dateTime()>
+    value: <randomFloat()>
+    type: '@event_type_*'
+  my_event_{1..100}:
+    created_at: <dateTime()>
+    value: <randomFloat()>
+    type: '@my_event_type_*'
