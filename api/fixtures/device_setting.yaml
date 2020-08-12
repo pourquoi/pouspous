@@ -1,0 +1,5 @@
+App\Entity\DeviceSetting:
+  devicesetting_{1..3}:
+    name: <word()>
+    value: <randomFloat()>
+    device: '@mydevice'

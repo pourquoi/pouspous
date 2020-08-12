@@ -3,10 +3,10 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Repository\DeviceSettingRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 /**
@@ -14,34 +14,39 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *     normalizationContext={"groups"={"read"}},
  *     denormalizationContext={"groups"={"write"}}
  * )
- * @ApiFilter(SearchFilter::class, properties={"name": "exact"})
  *
- * @ORM\Entity(repositoryClass="App\Repository\DeviceRepository")
+ * @ApiFilter(SearchFilter::class, properties={"name"})
+ * @ApiFilter(SearchFilter::class, properties={"device.name"})
+ *
+ * @ORM\Entity(repositoryClass=DeviceSettingRepository::class)
  */
-class Device
+class DeviceSetting
 {
-    use Traits\TimestampTrait;
+    use Traits\DeviceTrait;
 
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"read"})
      */
     protected $id;
 
     /**
-     * @ORM\Column(type="string", length=255, unique=true)
-     * @Groups({"read", "write"})
+     * @ORM\Column(type="string", length=255)
      */
     protected $name;
+
+    /**
+     * @ORM\Column(type="json")
+     */
+    protected $value;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -49,6 +54,18 @@ class Device
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getValue()
+    {
+        return $this->value;
+    }
+
+    public function setValue($value): self
+    {
+        $this->value = $value;
 
         return $this;
     }

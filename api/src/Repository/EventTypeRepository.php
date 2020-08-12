@@ -6,6 +6,12 @@ use App\Entity\EventType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
+/**
+ * @method EventType|null find($id, $lockMode = null, $lockVersion = null)
+ * @method EventType|null findOneBy(array $criteria, array $orderBy = null)
+ * @method EventType[]    findAll()
+ * @method EventType[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
 class EventTypeRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -13,6 +19,12 @@ class EventTypeRepository extends ServiceEntityRepository
         parent::__construct($registry, EventType::class);
     }
 
+    /**
+     * @param string|null $name
+     * @param string|null $device
+     * @return EventType|null
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
     public function getByNameAndDevice(?string $name, ?string $device)
     {
         return $this->createQueryBuilder('t')

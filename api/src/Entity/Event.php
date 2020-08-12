@@ -15,9 +15,11 @@ use App\Dto\EventInput;
  *         "create"={
  *             "method"="POST",
  *             "input"=EventInput::class
- *         }
+ *         },
+ *         "get"={"method"="GET"}
  *     },
  * )
+ *
  * @ORM\Entity()
  */
 class Event
@@ -33,7 +35,7 @@ class Event
     protected $id;
 
     /**
-     * @ORM\Column(type="float", nullable=true)
+     * @ORM\Column(type="json", nullable=true)
      * @Groups({"read", "write"})
      */
     protected $value;
@@ -50,12 +52,12 @@ class Event
         return $this->id;
     }
 
-    public function getValue(): ?float
+    public function getValue()
     {
         return $this->value;
     }
 
-    public function setValue(?float $value): self
+    public function setValue($value): self
     {
         $this->value = $value;
         return $this;

@@ -1,9 +1,9 @@
 App\Entity\EventType:
-  event_type_{1..10}:
+  eventtype_{1..10}:
     name: <word()>
     label: <text(50)>
     device: '@device_*'
-  my_event_type_{1..3}:
+  myeventtype_{1..3}:
     name: <word()>
     label: <text(50)>
-    device: '@my_device'
+    device: '@mydevice'
