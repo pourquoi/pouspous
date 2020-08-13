@@ -39,6 +39,9 @@ router.beforeEach((to, from, next) => {
         if (store.getters["user/authenticated"]) {
             next();
         } else {
+            console.log(store.state.user.device);
+            console.log(store.getters["user/authenticated"]);
+            console.log("user not authenticated for route", to);
             next({
                 name: "Login",
                 query: { redirect: to.fullPath }

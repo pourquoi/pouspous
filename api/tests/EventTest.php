@@ -22,4 +22,13 @@ class EventTest extends ApiTestCase
 
         $this->assertJsonContains(['value' => 1]);
     }
+
+    public function testGetEvents(): void
+    {
+        $response = static::createClient()->request('GET', '/api/events', ['headers' => ['X-Device' => 'pouspous']]);
+
+        $this->assertResponseStatusCodeSame(200);
+
+        $this->assertJsonContains(['hydra:totalItems' => 100]);
+    }
 }

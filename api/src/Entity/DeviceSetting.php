@@ -8,10 +8,11 @@ use App\Repository\DeviceSettingRepository;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ApiResource(
- *     normalizationContext={"groups"={"read"}},
+ *     normalizationContext={"groups"={"setting:read"}},
  *     denormalizationContext={"groups"={"write"}}
  * )
  *
@@ -33,13 +34,23 @@ class DeviceSetting
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"setting:read", "setting:write"})
      */
     protected $name;
 
     /**
      * @ORM\Column(type="json")
+     * @Groups({"setting:read", "setting:write"})
      */
     protected $value;
+
+    /**
+     * @Groups({"setting:read"})
+     */
+    public function getDeviceName()
+    {
+       return $this->getDevice() ? $this->getDevice()->getName() : null;
+    }
 
     public function getId(): ?int
     {

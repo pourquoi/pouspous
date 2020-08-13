@@ -35,7 +35,7 @@
                 </v-tooltip>
               </v-toolbar>
               <v-card-text>
-                <v-form>
+                <v-form @submit.prevent="submit">
                   <v-text-field
                     v-model="device"
                     label="Station"
@@ -70,7 +70,7 @@ export default {
         submit() {
             this.login(this.device)
                 .then(r => {
-                    this.$router.push('Dashboard');
+                    this.$router.push({name: "Dashboard"});
                 })
         }
     }

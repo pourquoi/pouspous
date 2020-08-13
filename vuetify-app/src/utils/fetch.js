@@ -16,7 +16,7 @@ export default function (id, options = {}) {
         options.headers.set('Accept', MIME_TYPE);
 
     if (userState.state.device) {
-        options.headers.set('X-Device', userState.state.device);
+        options.headers.set('X-Device', userState.state.device.name);
     }
 
     if (

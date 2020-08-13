@@ -6,3 +6,8 @@ api_platform:
     swagger:
         versions: [3]
     name_converter: 'Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter'
+    formats:
+        jsonld:   ['application/ld+json']
+        json:     ['application/json']
+        csv:      ['text/csv']
+

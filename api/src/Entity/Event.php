@@ -2,10 +2,13 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use App\Dto\EventInput;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 
 /**
  * @ApiResource(
@@ -19,6 +22,9 @@ use App\Dto\EventInput;
  *         "get"={"method"="GET"}
  *     },
  * )
+ *
+ * @ApiFilter(SearchFilter::class, properties={"type.name": "exact"})
+ * @ApiFilter(OrderFilter::class, properties={"id": "DESC"})
  *
  * @ORM\Entity()
  */
