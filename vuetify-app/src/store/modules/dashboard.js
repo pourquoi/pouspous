@@ -33,6 +33,7 @@ export default {
 
                     types.forEach(type => {
                         type._loading = false;
+                        type.display = type.display || null;
                         type.events = [];
                     })
 
@@ -43,6 +44,15 @@ export default {
                 })
                 .catch(e => { console.log(e) });
             
+        },
+        updateDisplay({state, commit}, card) {
+            commit('updateCard', {id: card.id, display: card.display})
+
+            return eventTypeService.patch(card['@id'], {display: card.display})
+                .then(response => { 
+                    return response.json() 
+                })
+                .catch(e => { console.log(e) });
         },
         loadCardsContent({state, commit, dispatch}) {
             state.cards.forEach((card) => {

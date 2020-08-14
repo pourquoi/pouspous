@@ -23,8 +23,12 @@ export default function (id, options = {}) {
         'undefined' !== options.body &&
         !(options.body instanceof FormData) &&
         null === options.headers.get('Content-Type')
-    )
-        options.headers.set('Content-Type', MIME_TYPE);
+    ) {
+        if (options.method == 'PATCH')
+            options.headers.set('Content-Type', 'application/merge-patch+json');
+        else
+            options.headers.set('Content-Type', MIME_TYPE);
+    }
 
     if (options.params) {
         let queryString = Object.keys(options.params)

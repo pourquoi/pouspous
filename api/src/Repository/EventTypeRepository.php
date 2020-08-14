@@ -20,6 +20,19 @@ class EventTypeRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param string $device
+     * @return EventType[]
+     */
+    public function findByDeviceName($device)
+    {
+        return $this->createQueryBuilder('t')
+            ->innerJoin('t.device', 'd')
+            ->where('d.name = :device')
+            ->setParameter('device', $device)
+            ->getQuery()->getResult();
+    }
+
+    /**
      * @param string|null $name
      * @param string|null $device
      * @return EventType|null

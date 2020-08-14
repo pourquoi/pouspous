@@ -9,14 +9,14 @@ char ssid[] = SECRET_SSID;
 char pass[] = SECRET_PASS;
 char device[] = DEVICE;
 
-char server_name[] = "192.168.0.21";
-const int server_port = 9006;
+char server_name[] = SERVER_NAME;
+const int server_port = SERVER_PORT;
 
 WiFiClient wifi;
 
 HttpClient client = HttpClient(wifi, server_name, server_port);
 
-const long utc_offset = 3600;
+const long utc_offset = 3600*2;
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "pool.ntp.org", utc_offset);
 
@@ -84,6 +84,9 @@ void setup()
     pinMode(lights.relay_pin, OUTPUT);
     pinMode(watering.motor_pin, OUTPUT);
     pinMode(watering.sensor_pin, INPUT);
+
+    digitalWrite(watering.motor_pin, HIGH);
+    digitalWrite(lights.relay_pin, LOW);
 
     apiPostDevice();
     apiGetSettings();
@@ -253,20 +256,25 @@ void handleWatering()
 
             apiPostEvent("watering", 1);
 
-            digitalWrite(watering.motor_pin, HIGH);
+            digitalWrite(watering.motor_pin, LOW);
 
             Serial.println("Do watering");
             delay(1000 * watering.duration);
-
+            
+            digitalWrite(watering.motor_pin, HIGH);
             apiPostEvent("watering", 0);
+
+            Serial.println("Stop watering");
         }
     }
+
+    digitalWrite(watering.motor_pin, HIGH);
 }
 
 void handleLights()
 {
     int status;
-    if (timeClient.getHours() < lights.start_hour && timeClient.getHours() > lights.end_hour)
+    if (timeClient.getHours() < lights.start_hour && timeClient.getHours() >= lights.end_hour)
     {
         status = LOW;
     }
@@ -292,7 +300,7 @@ void loop()
     if (timeClient.getMinutes() % 10 == 0 && timeClient.getEpochTime() > setting_update_epoch + 60 * 5)
     {
         apiGetSettings();
-        setting_update_epoch = timeClient.getMinutes();
+        setting_update_epoch = timeClient.getEpochTime();
     }
 
     handleLights();

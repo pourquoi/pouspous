@@ -10,7 +10,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @ApiResource(
  *     normalizationContext={"groups"={"read"}},
- *     denormalizationContext={"groups"={"write"}}
+ *     denormalizationContext={"groups"={"write"}},
+ *     itemOperations={
+ *          "get"={},
+ *          "patch"={
+ *              "input_formats"={"json"={"application/merge-patch+json"}}
+ *          }
+ *      }
  * )
  * @ORM\Entity(repositoryClass="App\Repository\EventTypeRepository")
  */
@@ -38,6 +44,12 @@ class EventType
      */
     protected $label;
 
+    /**
+     * @ORM\Column(nullable=true)
+     * @Groups({"read", "write"})
+     */
+    protected $display;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -62,6 +74,17 @@ class EventType
     public function setLabel(?string $label): self
     {
         $this->label = $label;
+        return $this;
+    }
+
+    public function getDisplay(): ?string
+    {
+        return $this->display;
+    }
+
+    public function setDisplay(?string $display): self
+    {
+        $this->display = $display;
         return $this;
     }
 }
