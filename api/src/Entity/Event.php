@@ -41,7 +41,7 @@ class Event
     protected $id;
 
     /**
-     * @ORM\Column(type="json", nullable=true)
+     * @ORM\Column(type="float", nullable=true)
      * @Groups({"read", "write"})
      */
     protected $value;

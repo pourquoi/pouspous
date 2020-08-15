@@ -39,7 +39,7 @@ class DeviceSetting
     protected $name;
 
     /**
-     * @ORM\Column(type="json")
+     * @ORM\Column(type="float")
      * @Groups({"setting:read", "setting:write"})
      */
     protected $value;

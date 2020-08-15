@@ -13,7 +13,6 @@
 
         <v-card-text v-if="show_chart">
             <apexchart
-                width="400"
                 :type="chart_type"
                 :options="chart_options"
                 :series="chart_series"

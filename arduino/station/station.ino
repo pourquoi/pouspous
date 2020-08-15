@@ -32,7 +32,7 @@ unsigned long setting_update_epoch = 0;
 
 struct watering_t
 {
-    int motor_pin = D2;
+    int motor_pin = D5;
     int sensor_pin = D4;
 
     // mode d'arrosage:
@@ -47,7 +47,7 @@ struct watering_t
     unsigned long last_epoch = 0;
 
     // durée d'arrosage en secondes
-    int duration = 5;
+    int duration = 10;
 
 } watering;
 
@@ -64,6 +64,13 @@ struct lights_t
 
 void setup()
 {
+    pinMode(lights.relay_pin, OUTPUT);
+    pinMode(watering.motor_pin, OUTPUT);
+    pinMode(watering.sensor_pin, INPUT);
+
+    digitalWrite(watering.motor_pin, HIGH);
+    digitalWrite(lights.relay_pin, LOW);
+    
     Serial.begin(115200);
 
     WiFi.begin(ssid, pass);
@@ -80,13 +87,6 @@ void setup()
     Serial.println(WiFi.localIP());
 
     timeClient.begin();
-
-    pinMode(lights.relay_pin, OUTPUT);
-    pinMode(watering.motor_pin, OUTPUT);
-    pinMode(watering.sensor_pin, INPUT);
-
-    digitalWrite(watering.motor_pin, HIGH);
-    digitalWrite(lights.relay_pin, LOW);
 
     apiPostDevice();
     apiGetSettings();
@@ -308,4 +308,6 @@ void loop()
     handleWatering();
 
     delay(1000);
+
+    
 }
