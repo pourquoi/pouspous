@@ -1,24 +1,40 @@
 <template>
     <v-card class="mr-6 mb-6">
-        <v-list-item two-line>
-            <v-list-item-content>
-                <v-list-item-title class="headline">{{ card.name }}</v-list-item-title>
-                <v-list-item-subtitle>Mon, 12:30 PM, Mostly sunny</v-list-item-subtitle>
-            </v-list-item-content>
-        </v-list-item>
+        <v-toolbar flat>
+            <v-toolbar-title>{{ card.name }}</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-btn color="grey" icon @click="hide">
+                <v-icon>fa-eye-slash</v-icon>
+            </v-btn>
+            <v-btn icon v-if="configured" @click="toggleSettings">
+                <v-icon>fa-cog</v-icon>
+            </v-btn>
+        </v-toolbar>
 
-        <v-card-text v-if="display">
-            <apexchart width="400" :type="type" :options="options" :series="series"></apexchart>
+        <v-card-text v-if="show_chart">
+            <apexchart
+                width="400"
+                :type="chart_type"
+                :options="chart_options"
+                :series="chart_series"
+            ></apexchart>
         </v-card-text>
 
-        <v-card-text v-else>
-            <v-radio-group
-                :row="false"
-                @change="onSelectDisplay"
-            >
-                <v-radio v-for="display in displays" :key="display" :label="display" :value="display"></v-radio>
+        <v-card-text v-if="show_settings">
+            <v-radio-group :row="true" v-model="settings.display" label="Display mode">
+                <v-radio
+                    v-for="display in displays"
+                    :key="display"
+                    :label="display"
+                    :value="display"
+                ></v-radio>
             </v-radio-group>
         </v-card-text>
+
+        <v-card-actions v-if="show_settings">
+            <v-spacer />
+            <v-btn color="primary" @click="saveSettings">Save</v-btn>
+        </v-card-actions>
     </v-card>
 </template>
 
@@ -27,27 +43,45 @@ import * as moment from "moment";
 import { mapActions } from "vuex";
 
 export default {
-    props: ["card"],
+    components: {},
+    props: {
+        card: {
+            type: Object,
+            required: true,
+        },
+    },
     data() {
         return {
+            show_settings: false,
             displays: ["on/off", "line", "bar"],
+            settings: {},
         };
     },
+    created() {
+        this.show_settings = !this.card.display;
+        this.initSettings();
+    },
     computed: {
-        display() {
-            return this.card.display ? this.card.display : null
+        configured() {
+            return !!this.card.display;
         },
-        type: function () {
-            if (this.card.display == "on/off") {
-                return "scatter";
-            } else if (this.card.display == "bar") {
-                return "bar";
-            }
-
-            return "line";
+        show_chart() {
+            return (
+                !this.show_settings &&
+                this.configured &&
+                ["bar", "line"].indexOf(this.card.display) != -1
+            );
         },
-        options: function () {
+        chart_type() {
+            return this.card.display;
+        },
+        chart_options: function () {
             let options = {
+                chart: {
+                    toolbar: {
+                        show: false,
+                    },
+                },
                 xaxis: {
                     type: "datetime",
                     labels: {
@@ -69,7 +103,7 @@ export default {
 
             return options;
         },
-        series: function () {
+        chart_series: function () {
             if (this.card && this.card.events) {
                 let series = [
                     {
@@ -93,12 +127,26 @@ export default {
     },
     methods: {
         ...mapActions("dashboard", ["updateDisplay"]),
-        onSelectDisplay(e) {
-            this.updateDisplay({...this.card, display: e})
-                .then( () => {
-                    
-                })
-        }
-    }
+        initSettings() {
+            this.settings = {
+                display: this.card.display,
+            };
+        },
+        toggleSettings() {
+            this.initSettings();
+            this.show_settings = !this.show_settings;
+        },
+        saveSettings() {
+            this.$emit("update:card", {
+                ...this.card,
+                display: this.settings.display,
+            });
+
+            this.toggleSettings();
+        },
+        hide() {
+            this.$emit("update:card", { ...this.card, display: "hidden" });
+        },
+    },
 };
 </script>

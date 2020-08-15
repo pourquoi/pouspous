@@ -10,4 +10,5 @@ api_platform:
         jsonld:   ['application/ld+json']
         json:     ['application/json']
         csv:      ['text/csv']
+        html:     ['text/html']
 
