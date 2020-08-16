@@ -125,6 +125,7 @@ export default {
         },
         chart_options: function () {
             let options = {
+                colors:['#2c699a', '#048ba8', '#0db39e', '#16db93', '#83e377', '#b9e769', '#efea5a', '#f1c453', '#f29e4c'],
                 chart: {
                     height: 200,
                     type: this.chart_type,

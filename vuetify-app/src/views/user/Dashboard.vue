@@ -18,7 +18,7 @@
                 fab
                 dark
                 small
-                color="green"
+                color="primary"
                 class="add-event-btn"
                 v-for="card in hiddenCards"
                 :key="card.id"

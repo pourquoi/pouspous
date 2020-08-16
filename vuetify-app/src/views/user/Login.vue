@@ -37,6 +37,7 @@
               <v-card-text>
                 <v-form @submit.prevent="submit">
                   <v-text-field
+                    autocorrect="off" autocapitalize="none"
                     v-model="device"
                     label="Station"
                     name="station"
