@@ -6,7 +6,9 @@ import storage from '../../utils/storage';
 const STORAGE_KEY = 'user';
 
 const state = {
-    device: null
+    device: null,
+    error: null,
+    isLoading: false
 }
 
 function loadFromStorage(state) {
@@ -36,26 +38,33 @@ const mutations = {
         state.device = device;
 
         saveToStorage(state);
-    }
+    },
+    updateField
 }
 
 const actions = {
     login({commit}, device) {
+
+        commit('updateField', {path: 'error', value: null});
+        commit('updateField', {path: 'isLoading', value: true});
+
         return fetch('devices', {params: {name: device}})
             .then(response => response.json())
             .then(retrieved => {
                 if (retrieved['hydra:totalItems'] == 1) {
                     commit('setDevice', retrieved['hydra:member'][0]);
                 } else {
-                    throw "device not found";
+                    commit('updateField', {path: 'error', value: "Device not found"});
                 }
+                commit('updateField', {path: 'isLoading', value: false});
             })
             .catch(e => {
                 console.log(e)
+                commit('updateField', {path: 'isLoading', value: false});
             });
     },
     logout({commit}) {
-        commit('updateField', {path: 'device', value: null});
+        commit('setDevice', null);
 
         return Promise.resolve(true);
     }

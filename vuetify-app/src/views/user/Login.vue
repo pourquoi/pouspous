@@ -42,13 +42,16 @@
                     name="station"
                     prepend-icon="fa-microchip"
                     type="text"
+                    :error-messages="errors"
+                    @input="$v.device.$touch()"
+                    @blur="$v.device.$touch()"
                   ></v-text-field>
 
                 </v-form>
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="primary" @click="submit">Login</v-btn>
+                <v-btn color="primary" :disabled="isLoading" @click="submit">Login</v-btn>
               </v-card-actions>
             </v-card>
           </v-col>
@@ -57,20 +60,45 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
+import { mapFields } from "vuex-map-fields";
+import { validationMixin } from 'vuelidate';
+import { required, maxLength, email } from 'vuelidate/lib/validators'
 
 export default {
+    mixins: [validationMixin],
     data() {
         return {
             device: ''
         }
     },
+    validations: {
+        device: { required },
+    },
+    computed: {
+        ...mapFields('user', {
+            isLoading: 'isLoading',
+            error: 'error'
+        }),
+        errors() {
+            const errors = [];
+
+            if (!this.$v.device.$dirty) return errors
+
+            if(this.error) errors.push(this.error)
+
+            return errors;
+        }
+    },
     methods: {
         ...mapActions("user", ["login"]),
         submit() {
+            this.$v.$touch()
             this.login(this.device)
-                .then(r => {
-                    this.$router.push({name: "Dashboard"});
+                .then(() => {
+                    if (!this.$v.$invalid) {
+                        this.$router.push({name: "Dashboard"});
+                    }
                 })
         }
     }

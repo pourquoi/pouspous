@@ -5,6 +5,10 @@ import eventService from '../../services/event';
 
 import * as moment from "moment";
 
+function parseEvent(data, card) {
+    return data
+}
+
 export default {
     namespaced: true,
     state: {
@@ -73,10 +77,12 @@ export default {
             let card = state.cards.find(c => c.id == id);
             if (card) {
                 eventService
-                    .findAll({ params: { 'type.name': card.name } })
+                    .findAll({ params: { 'type.name': card.name, 'order[id]': 'desc' } })
                     .then(response => response.json())
                     .then(retrieved => {
-                        let events = retrieved['hydra:member'].sort((a, b) => {
+                        let events = retrieved['hydra:member'].map(function(event) {
+                            return parseEvent(event, card)
+                        }).sort((a, b) => {
                             return moment(a.created_at).isAfter(b.created_at) ? -1 : 1;
                         });
                         commit('updateCard', { id: card.id, events: events })

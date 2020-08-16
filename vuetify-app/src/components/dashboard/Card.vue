@@ -1,5 +1,5 @@
 <template>
-    <v-card class="mr-6 mb-6">
+    <v-card class="mr-6 mb-6 dashboard-card">
         <v-toolbar flat>
             <v-toolbar-title>{{ card.name }}</v-toolbar-title>
             <v-spacer></v-spacer>
@@ -12,15 +12,11 @@
         </v-toolbar>
 
         <v-card-text v-if="show_chart">
-            <apexchart
-                :type="chart_type"
-                :options="chart_options"
-                :series="chart_series"
-            ></apexchart>
+            <apexchart :type="chart_type" :height="chart_height" :options="chart_options" :series="chart_series"></apexchart>
         </v-card-text>
 
         <v-card-text v-if="show_settings">
-            <v-radio-group :row="true" v-model="settings.display" label="Display mode">
+            <v-radio-group :row="true" v-model="settings.display" label="Type">
                 <v-radio
                     v-for="display in displays"
                     :key="display"
@@ -40,6 +36,58 @@
 <script>
 import * as moment from "moment";
 import { mapActions } from "vuex";
+
+// map from event type to apex chart type
+const chartTypesMap = {
+    bar: "bar",
+    line: "line",
+    "on/off": "rangeBar",
+};
+
+function getSerieValues(card) {
+    if (["bar", "line"].indexOf(card.display) != -1) {
+        return card.events.map((event) => ({
+            x: moment(event.created_at).valueOf(),
+            y: event.value,
+        }));
+    } else if (card.display == "on/off") {
+        let data = [];
+        let start = null;
+        let end = null;
+        card.events.slice().sort((a, b) => {
+            return a.id < b.id ? -1 : 1;
+        }).forEach((event, idx) => {
+            if (event.value == 0 && start) {
+                end = moment(event.created_at).valueOf();
+            } else if (event.value == 1 && !start) {
+                start = moment(event.created_at).valueOf();
+            }
+
+            if (!end && idx == card.events.length-1) {
+                //end = new Date()
+            }
+
+            if (start && end) {
+                /*
+                if (data.length) {
+                    data.push({
+                        x: "off",
+                        y: [data[data.length - 1].y[1], start],
+                    });
+                }
+                */
+                
+                data.push({
+                    x: "on",
+                    y: [start, end],
+                });
+                start = end = null;
+            }
+        });
+
+        return data;
+    }
+}
 
 export default {
     components: {},
@@ -64,21 +112,24 @@ export default {
         configured() {
             return !!this.card.display;
         },
+        chart_height() {
+            return this.card.display == "on/off" ? 120 : 200;
+        },
         show_chart() {
-            return (
-                !this.show_settings &&
-                this.configured &&
-                ["bar", "line"].indexOf(this.card.display) != -1
-            );
+            return !this.show_settings && this.configured && this.chart_type;
         },
         chart_type() {
-            return this.card.display;
+            return this.card.display in chartTypesMap
+                ? chartTypesMap[this.card.display]
+                : undefined;
         },
         chart_options: function () {
             let options = {
                 chart: {
+                    height: 200,
+                    type: this.chart_type,
                     toolbar: {
-                        show: false,
+                        show: true,
                     },
                 },
                 xaxis: {
@@ -87,8 +138,36 @@ export default {
                         datetimeUTC: false,
                     },
                 },
+
+                tooltip: {
+                    x: {
+                        format: 'dd MM'
+                    }
+                }
             };
 
+            if (this.card.display == "on/off") {
+
+                options.tooltip.x.format = 'HH:mm:ss';
+                
+                Object.assign(options, {
+                    plotOptions: {
+                        bar: {
+                            horizontal: true,
+                            barHeight: '90%'
+                        },
+                    },
+                    stroke: {
+                        width: 5,
+                    },
+                    fill: {
+                        type: "solid",
+                        opacity: 0.6,
+                    },
+                });
+            }
+
+            /*
             if (this.card.display == "on/off") {
                 options.yaxis = {
                     tickAmount: 2,
@@ -99,6 +178,7 @@ export default {
                     },
                 };
             }
+            */
 
             return options;
         },
@@ -108,13 +188,7 @@ export default {
                     {
                         name: this.card.name,
 
-                        data: this.card.events.map((event) => {
-                            let p = {
-                                x: moment(event.created_at).valueOf(),
-                                y: event.value,
-                            };
-                            return p;
-                        }),
+                        data: getSerieValues(this.card),
                     },
                 ];
 
@@ -149,3 +223,9 @@ export default {
     },
 };
 </script>
+
+<style scoped>
+    .dashboard-card {
+        width: 100%;
+    }
+</style>

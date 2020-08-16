@@ -21,6 +21,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
  *         },
  *         "get"={"method"="GET"}
  *     },
+ *     attributes={"pagination_items_per_page"=100}
  * )
  *
  * @ApiFilter(SearchFilter::class, properties={"type.name": "exact"})
