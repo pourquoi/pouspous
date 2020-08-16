@@ -49,6 +49,9 @@ struct watering_t
     // durée d'arrosage en secondes
     int duration = 10;
 
+    // date du dernier envoi de l'humidité à l'api
+    unsigned long last_sensor_save = 0;
+
 } watering;
 
 struct lights_t
@@ -303,11 +306,15 @@ void loop()
         setting_update_epoch = timeClient.getEpochTime();
     }
 
+    if (timeClient.getEpochTime() > watering.last_sensor_save + 30)
+    {
+        watering.last_sensor_save = timeClient.getEpochTime();
+        apiPostEvent("humidity_1", (float)analogRead(A0));
+    }
+
     handleLights();
 
     handleWatering();
 
     delay(1000);
-
-    
 }
