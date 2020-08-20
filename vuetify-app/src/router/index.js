@@ -5,6 +5,7 @@ import eventTypeRoutes from './eventtype';
 import eventRoutes from './event';
 
 import Dashboard from '../views/user/Dashboard';
+import Settings from '../views/user/Settings';
 import Login from '../views/user/Login';
 
 import store from "@/store";
@@ -18,6 +19,14 @@ let router = new VueRouter({
             path: '',
             name: 'Dashboard',
             component: Dashboard,
+            meta: {
+                authRequired: true
+            }
+        },
+        {
+            path: '',
+            name: 'Settings',
+            component: Settings,
             meta: {
                 authRequired: true
             }
