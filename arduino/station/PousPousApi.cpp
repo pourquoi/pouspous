@@ -112,6 +112,9 @@ bool PousPousApi::getSetting(const String &name, float &value)
     {
         const char *setting = doc[i]["name"].as<char *>();
         value = doc[i]["value"].as<float>();
+#ifdef LOGGING
+        Serial.println(value);
+#endif
         return true;
     }
 

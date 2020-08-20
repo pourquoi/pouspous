@@ -5,6 +5,8 @@
 #include <ArduinoJson.h>
 #include <ESP8266WiFi.h>
 
+#define LOGGING
+
 class PousPousApi
 {
 public:

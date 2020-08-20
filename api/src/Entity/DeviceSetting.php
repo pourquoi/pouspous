@@ -13,7 +13,7 @@ use App\Dto\SettingInput;
 
 /**
  * @ApiResource(
- *     normalizationContext={"groups"={"setting:read"}},
+ *     normalizationContext={"groups"={"read"}},
  *     denormalizationContext={"groups"={"write"}},
  *     attributes={"pagination_client_enabled"=true, "pagination_client_items_per_page"=true, "maximum_items_per_page"=30},
  *     collectionOperations={
@@ -31,8 +31,7 @@ use App\Dto\SettingInput;
  *     },
  * )
  *
- * @ApiFilter(SearchFilter::class, properties={"name"})
- * @ApiFilter(SearchFilter::class, properties={"device.name"})
+ * @ApiFilter(SearchFilter::class, properties={"name": "exact", "device.name": "exact"})
  *
  * @ORM\Entity(repositoryClass=DeviceSettingRepository::class)
  */
@@ -44,24 +43,24 @@ class DeviceSetting
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"setting:read"})
+     * @Groups({"read"})
      */
     protected $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"setting:read", "write"})
+     * @Groups({"read", "write"})
      */
     protected $name;
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"setting:read", "write"})
+     * @Groups({"read", "write"})
      */
     protected $value;
 
     /**
-     * @Groups({"setting:read"})
+     * @Groups({"read"})
      */
     public function getDeviceName()
     {
