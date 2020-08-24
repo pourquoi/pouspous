@@ -178,7 +178,7 @@ void loop()
     }
 
     // on log le niveau d'humidité 
-    if (timeClient.getEpochTime() > watering.last_sensor_save + 30)
+    if (timeClient.getEpochTime() > watering.last_sensor_save + 120)
     {
         watering.last_sensor_save = timeClient.getEpochTime();
         api.createEvent("humidity_1", (float)analogRead(A0));
