@@ -11,6 +11,6 @@ Circuit
 ---
 Just connect an analog sensor to A0.
 
-That's it, upload the sketch to the D1 and login to http://cataclop.fr:9006.
+That's it, upload the sketch to the D1 and login to http://cataclop.fr:9007.
 
 [![alt text](IMG_20200827_183102.jpg)](https://github.com/pourquoi/pouspous/blob/master/arduino/examples/sensor_monitoring/IMG_20200827_183102.jpg?raw=true "Simple sensor")
