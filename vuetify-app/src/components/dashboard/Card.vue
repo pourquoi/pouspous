@@ -1,5 +1,5 @@
 <template>
-    <v-card class="mr-6 mb-6 dashboard-card">
+    <v-card class="dashboard-card">
         <v-toolbar flat>
             <v-toolbar-title>{{ card.name }}</v-toolbar-title>
             <v-spacer></v-spacer>

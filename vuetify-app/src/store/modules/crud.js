@@ -166,10 +166,11 @@ export default function makeCrudModule({
             [ACTIONS.SET_DELETED]: (state, deleted) => {
                 if (!state.allIds.includes(deleted['@id'])) return;
                 Object.assign(state, {
-                    allIds: remove(state.allIds, item => item['@id'] === deleted['@id']),
-                    byId: remove(state.byId, id => id === deleted['@id']),
                     deleted
                 });
+
+                state.allIds = state.allIds.filter(item => item !== deleted['@id'])
+                delete state.byId[deleted['@id']]
             },
             [ACTIONS.SET_ERROR]: (state, error) => {
                 Object.assign(state, { error, isLoading: false });

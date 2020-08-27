@@ -26,31 +26,15 @@
             >{{ card.name }}</v-btn>
         </v-speed-dial>
 
-        <v-row v-if="missingDisplayCards.length">
-            <v-col cols="12">
-                <v-row align="center" justify="center" class="grey lighten-5 pa-10">
-                    <DCard
-                        v-for="card in missingDisplayCards"
-                        @update:card="updateCard"
-                        :key="card.id"
-                        :card="card"
-                    />
-                </v-row>
-            </v-col>
-        </v-row>
+        <div class="cards-container">
+            <div class="card-container" v-for="card in missingDisplayCards" :key="card.id">
+                <DCard @update:card="updateCard" :card="card" />
+            </div>
 
-        <v-row>
-            <v-col cols="12">
-                <v-row align="center" justify="center" class="pa-10">
-                    <DCard
-                        v-for="card in featuredCards"
-                        @update:card="updateCard"
-                        :key="card.id"
-                        :card="card"
-                    />
-                </v-row>
-            </v-col>
-        </v-row>
+            <div class="card-container" v-for="card in featuredCards" :key="card.id">
+                <DCard @update:card="updateCard" :card="card" />
+            </div>
+        </div>
     </v-container>
 </template>
 
@@ -92,6 +76,35 @@ export default {
 .add-event-btn {
     .v-btn__content {
         color: black;
+    }
+}
+
+.cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin-right: -12px;
+    margin-left: -12px;
+    max-width: calc(100% + 24px);
+    flex: 1 1 100%;
+
+    .card-container {
+        margin-bottom: 12px;
+
+        flex-basis: 0;
+        flex-grow: 1;
+        max-width: 100%;
+        width: 100%;
+        padding: 12px;
+        min-width: 100%;
+
+        //flex: 0 1 100%;
+
+        @media screen and (min-width: 40em) {
+            width: 50%;
+            min-width: 50%;
+            //flex: 0 1 calc(50% - 1em);
+        }
     }
 }
 </style>

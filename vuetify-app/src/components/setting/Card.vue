@@ -1,5 +1,5 @@
 <template>
-    <v-card class="mr-6 mb-6 setting-card">
+    <v-card class="setting-card">
         <v-toolbar flat v-if="!is_new">
             <v-toolbar-title>{{ values.name }}</v-toolbar-title>
             <v-spacer></v-spacer>
@@ -19,9 +19,10 @@
 
         <v-card-actions>
             <v-spacer />
-            <v-btn color="secondary" @click="save">{{ is_new ? 'Add Setting' : 'Update' }}</v-btn>
+            <v-btn :color="is_new ? 'primary' : 'secondary'" @click="save">{{ is_new ? 'Create' : 'Save' }}</v-btn>
         </v-card-actions>
     </v-card>
+    
 </template>
 
 <script>
